@@ -1,1 +1,4 @@
-# Honeywell-Project
+# Honeywell-Project Description
+Avionics applications provide proposed flight plan routes and modifications of those routes to optimize time and fuel usage.  This project will involve consuming existing data sources and data mining it to extract application specific content.
+This project will discover the data available via System Wide Information Management (SWIM) and data mine it to determine popular flight plan routes and evaluate then for time / fuel usage.  The evaluation will also include a study of weather patterns to determine whether routes are modified due to seasonal weather or are routes planned using daily weather forecasts. 
+A second aspect of the project is to use open-source weather data and convert into a wind model of arinc 702 PWI format.  This will require the creation of pilot defined waypoints to provide points upon which the winds can be applied.  This will also require data manipulation to normalize the weather information.  AI/ML can be used to determine the solution.
