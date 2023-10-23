@@ -1,0 +1,8 @@
+-You must create a Cesium account. You can do this through GitHub. 
+-Each account has a particular access token. Without it, the simulations won’t work. 
+-https://cesium.com/learn/cesiumjs-learn/cesiumjs-flight-tracker/
+This link above tells exactly how to plot points to visualize the path of planes. There are several options, such as a dynamic option that moves or a static option that shows all points of the path. 
+-We will need longitude, latitude, and height data to use Cesium most accurately. Our nodes for the final search algorithm should likely be particular longitudes, latitudes, and heights (and also should include a metric for time so that we can avoid collisions at particular times)  
+-We can populate and view multiple planes in the air at once 
+-There is an animation option to show the plane’s progress on the path
+
