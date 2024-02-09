@@ -12,7 +12,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
 # Load dataset (replace 'dataset.csv' with actual data)
-data = pd.read_csv('dataset.csv')
+data = pd.read_csv('TEST_DATASET.csv')
 
 # Explore and understand the dataset
 print(data.head())

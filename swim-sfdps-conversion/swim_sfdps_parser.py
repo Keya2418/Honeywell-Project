@@ -36,7 +36,7 @@ def parseNode(node, pathToNode: str, row_dict: dict):
     row_dict[colName] = text
 
 ### Setting file_name and parsing
-file_name = 'sample-data-1-8-24.xml'
+file_name = 'sample-data-1-25-24.xml'
 rows = []
 root = ET.parse(file_name).getroot()
 for i, message in enumerate(root.findall('message')):
