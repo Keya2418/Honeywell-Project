@@ -6,8 +6,10 @@
   There is a free API called CheckWXAPI that can help us with weather. METAR is a format for reporting current weather information. Here is the link: [Metar Documentation](https://www.checkwxapi.com/documentation/metar)
 
   Using the METAR API, we can decode METAR codes. Here is an example METAR code, as found on the [METAR Wikipedia page](https://en.wikipedia.org/wiki/METAR):
+  
   ``` METAR LBBG 041600Z 12012MPS 090V150 1400 R04/P1500N R22/P1500U +SN BKN022 OVC050 M04/M07 Q1020 NOSIG 8849//91= ```
-  Each section of the METAR code indicates something about some weather occurring at some location. According to the aforementioned Wikipedia page, the code means that at Burgas Airport (an airport in Bulgaria) on February 4th 2005 at 16:00 UTC, there was a 12 m/s windspeed from 120 degrees and there was snow falling at a heavy rate.
+
+   Each section of the METAR code indicates something about some weather occurring at some location. According to the aforementioned Wikipedia page, the code means that at Burgas Airport (an airport in Bulgaria) on February 4th 2005 at 16:00 UTC, there was a 12 m/s windspeed from 120 degrees and there was snow falling at a heavy rate.
 
   With this information, we can determine what aspects of weather we would like to consider "too dangerous" to travel through. We can reroute the flight based on whether there is snow, heavy wind, precipitation, or thunderstorms.
 
@@ -30,7 +32,8 @@ They use three-letter airport codes for airports and metropolitan areas around t
 
 ## Flight Tracks 
 There is a system called the "North Atlantic Tracks" (NATs). It updates every day on this website:
-[Update Website](https://notams.aim.faa.gov/nat.html)
+
+[NAT Update Website](https://notams.aim.faa.gov/nat.html)
 
 [Flight Plan Database: Read More About NATs](https://flightplandatabase.com/nav/NATS)
 
