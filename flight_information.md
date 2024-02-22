@@ -12,7 +12,7 @@
   With this information, we can determine what aspects of weather we would like to consider "too dangerous" to travel through. We can reroute the flight based on whether there is snow, heavy wind, precipitation, or thunderstorms.
 
 - Fuel usage and plane model:
-  Based on the aircraft model,
+  Based on the aircraft model, we can find out the fuel efficiency data and use that to our advantage so that we can make our improvements using what we already know about the aircraft. 
 
 - Historical flight paths:
   Phoenix and Las Vegas are known for having very few cloudy days and are some of the sunniest places in our country. The flight path from Phoenix to Las Vegas is a good starting point in terms of considering weather and creating the initial flight plans. It is a comparatively short flight and there is tons of data to draw from.
