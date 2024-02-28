@@ -15,7 +15,7 @@ def index():
     flight_data = []
 
     try:
-        excel_reader = pd.read_excel('Simbrief_Comparisons/PHX_LAS_022624_2328.xlsx')
+        excel_reader = pd.read_excel('Simbrief_Comparisons/PHX_LAS_022724_1610.xlsx')
 
         for index, row in excel_reader.iterrows():
             #skip the first two rows because they have stuff in them (the title and the departure time)
@@ -37,7 +37,7 @@ def index():
     except Exception as e:
         print(f"An error has occurred: {e}")
 
-    print(f"Flight data: {flight_data}")
+    #print(f"Flight data: {flight_data}")
 
     return render_template('phx-las.html', flight_data=json.dumps(flight_data))
 
