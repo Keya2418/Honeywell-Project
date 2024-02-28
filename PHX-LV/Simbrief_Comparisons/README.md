@@ -11,4 +11,6 @@ The latitude, longitude, and altitude are gathered from the flight log page on t
 MAKE SURE you divide the latitude and longitude by 100. Also, W/S are negative, N/E are positive coordinates.
 
 # Results of 02/26/2024 23:28 UTC PHX>LAS Comparison (Green is Simbrief, Red is FlightAware):
+![Comparing February 26th flights](CompResult_PHX_LAS_022624_2328.PNG)
 
+You can see that Simbrief has an unusual deviation from PHX Sky Harbor airport at the beginning of the flight. One area our team can improve upon for our flight-planning system is ensuring that our starting coordinates are definitely from the airports they are taking off from. 
