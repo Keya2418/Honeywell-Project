@@ -11,4 +11,4 @@ The latitude, longitude, and altitude are gathered from the flight log page on t
 MAKE SURE you divide the latitude and longitude by 100. Also, W/S are negative, N/E are positive coordinates.
 
 # Results of 02/26/2024 23:28 UTC PHX>LAS Comparison (Green is Simbrief, Red is FlightAware):
-![Comparing February 26th flights](CompResult_PHX_LAS_022624_2338.png)
+![Comparing February 26th flights](CompResult_PHX_LAS_022624_2328.png)
