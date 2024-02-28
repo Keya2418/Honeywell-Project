@@ -27,7 +27,7 @@
         // '[{"longitude":-122.39053,"latitude":37.61779,"height":-27.32},{"longitude":, "latitude":, "height": }]'
         const flightData = JSON.parse('{{ flight_data | safe }}');
 
-        const flightData2 = JSON.parse('[{"longitude":11200.7,"latitude":3326.1,"height":1135},{"longitude":11204.1,"latitude":3325.9,"height":3400},{"longitude":11211.8,"latitude":3326.1,"height":10100},{"longitude":11211.8,"latitude":3331.8,"height":13500},{"longitude":,"latitude":,"height":}]')
+        const flightData2 = JSON.parse('[{"longitude":-112.7,"latitude":33.261,"height":1135},{"longitude":-112.041,"latitude":33.259,"height":3400},{"longitude":-112.118,"latitude":33.261,"height":10100},{"longitude":-112.118,"latitude":33.318,"height":13500},{"longitude":-112.123,"latitude":33.375,"height":16600},{"longitude":-112.201,"latitude":34.017,"height":26300},{"longitude":-112.255,"latitude":34.070,"height":28000},{"longitude":-112.528,"latitude":34.340,"height":28000},{"longitude":-113.041,"latitude":34.451,"height":28000},{"longitude":-113.042,"latitude":34.451,"height":28000},{"longitude":-113.245,"latitude":34.584,"height":28000},{"longitude":-113.263,"latitude":35.003,"height":28000},{"longitude":-113.421,"latitude":35.171,"height":28000},{"longitude":-113.518,"latitude":35.278,"height":28000},{"longitude":-114.092,"latitude":35.455,"height":19700},{"longitude":-114.201,"latitude":35.503,"height":16200},{"longitude":-114.314,"latitude":35.574,"height":11800},{"longitude":-114.393,"latitude":36.023,"height":9000},{"longitude":-114.436, "latitude":36.044, "height":7500 },{"longitude":-115.091, "latitude":36.048, "height":2181}]')
         //const flightData2 = JSON.parse(
           //  '[{"longitude":-0.461941,"latitude":51.4706,"height":83},{"longitude":-122.39053,"latitude":37.61779,"height":-27.32}]'
         //);
@@ -44,7 +44,7 @@
         
         const timeStepInSeconds = 30;
         const totalSeconds = timeStepInSeconds * (flightData.length - 1);
-        const start = Cesium.JulianDate.fromIso8601("2020-03-09T23:10:00Z");
+        const start = Cesium.JulianDate.fromIso8601("2024-02-26T23:28:00Z");
         const stop = Cesium.JulianDate.addSeconds(start, totalSeconds, new Cesium.JulianDate());
         viewer.clock.startTime = start.clone();
         viewer.clock.stopTime = stop.clone();
@@ -57,28 +57,43 @@
 
         // The SampledPositionedProperty stores the position and timestamp for each sample along the radar sample series.
         const positionProperty = new Cesium.SampledPositionProperty();
+        const positionProperty2 = new Cesium.SampledPositionProperty();
 
+        //red flight data
         for (let i = 0; i < flightData.length; i++) {
-        const dataPoint = flightData[i];
+          const redDataPoint = flightData[i];
 
-        // Declare the time for this individual sample and store it in a new JulianDate instance.
-        const time = Cesium.JulianDate.addSeconds(start, i * timeStepInSeconds, new Cesium.JulianDate());
-        const position = Cesium.Cartesian3.fromDegrees(dataPoint.longitude, dataPoint.latitude, dataPoint.height);
-        // Store the position along with its timestamp.
-        // Here we add the positions all upfront, but these can be added at run-time as samples are received from a server.
-        positionProperty.addSample(time, position);
+          // Declare the time for this individual sample and store it in a new JulianDate instance.
+          const time = Cesium.JulianDate.addSeconds(start, i * timeStepInSeconds, new Cesium.JulianDate());
+          const position = Cesium.Cartesian3.fromDegrees(redDataPoint.longitude, redDataPoint.latitude, redDataPoint.height);
+          // Store the position along with its timestamp.
+          // Here we add the positions all upfront, but these can be added at run-time as samples are received from a server.
+          positionProperty.addSample(time, position);
 
-        viewer.entities.add({
-            description: `Location: (${dataPoint.longitude}, ${dataPoint.latitude}, ${dataPoint.height})`,
-            position: position,
-            point: { pixelSize: 10, color: Cesium.Color.RED }
-        });
+          viewer.entities.add({
+              description: `Location: (${redDataPoint.longitude}, ${redDataPoint.latitude}, ${redDataPoint.height})`,
+              position: position,
+              point: { pixelSize: 10, color: Cesium.Color.RED }
+          });
         }
 
+        //green flight data
+        for (let i = 0; i < flightData2.length; i++) {
+          const greenDataPoint = flightData2[i];
 
+          // Declare the time for this individual sample and store it in a new JulianDate instance.
+          const time = Cesium.JulianDate.addSeconds(start, i * timeStepInSeconds, new Cesium.JulianDate());
+          const position = Cesium.Cartesian3.fromDegrees(greenDataPoint.longitude, greenDataPoint.latitude, greenDataPoint.height);
+          // Store the position along with its timestamp.
+          // Here we add the positions all upfront, but these can be added at run-time as samples are received from a server.
+          positionProperty2.addSample(time, position);
 
-
-        
+          viewer.entities.add({
+              description: `Location: (${greenDataPoint.longitude}, ${greenDataPoint.latitude}, ${greenDataPoint.height})`,
+              position: position,
+              point: { pixelSize: 10, color: Cesium.Color.GREEN }
+          });
+        }
 
         // STEP 6 CODE (airplane entity)
         async function loadModel() {
@@ -93,9 +108,22 @@
             orientation: new Cesium.VelocityOrientationProperty(positionProperty),    
             path: new Cesium.PathGraphics({ width: 3 })
         });
+
+        const airplaneEntity2 = viewer.entities.add({
+          availability: new Cesium.TimeIntervalCollection([ new Cesium.TimeInterval({ start: start, stop: stop }) ]),
+            position: positionProperty2,
+            // Attach the 3D model instead of the green point.
+            model: { uri: airplaneUri },
+            // Automatically compute the orientation from the position.
+            orientation: new Cesium.VelocityOrientationProperty(positionProperty2),    
+            path: new Cesium.PathGraphics({ width: 3 })
+        })
         
-        viewer.trackedEntity = airplaneEntity;
+        //viewer.trackedEntity = airplaneEntity;
+
         }
+
+        
 
     loadModel();
     
