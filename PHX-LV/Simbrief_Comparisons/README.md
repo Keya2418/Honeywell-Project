@@ -13,7 +13,7 @@ MAKE SURE you divide the latitude and longitude by 100. Also, W/S are negative, 
 ## Results of 02/26/2024 23:28 UTC PHX>LAS Comparison (Green is Simbrief, Red is FlightAware):
 ![Comparing February 26th flights](CompResult_PHX_LAS_022624_2328.PNG)
 
-You can see that Simbrief has an unusual deviation from PHX Sky Harbor airport at the beginning of the flight. One area our team can improve upon for our flight-planning system is ensuring that our starting coordinates are definitely from the airports they are taking off from. 
+The coordinates of the starting areas don't match up with their airports. One area our team can improve upon for our flight-planning system is ensuring that our starting coordinates are definitely from the airports they are taking off from. 
 
 ## Results of 02/27/2024 16:10 UTC PHX>LAS Comparison (Green is Simbrief, Red is FlightAware):
 ![Comparing February 27th 16:10 flights](CompResult_PHX_LAS_022724_1610.PNG)
