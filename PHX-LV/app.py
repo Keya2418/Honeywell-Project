@@ -15,7 +15,7 @@ def index():
     flight_data = []
 
     try:
-        excel_reader = pd.read_excel('Simbrief_Comparisons/PHX_LAS_022724_1610.xlsx')
+        excel_reader = pd.read_excel('Simbrief_Comparisons/PHX_LAS_022724_1942.xlsx')
 
         for index, row in excel_reader.iterrows():
             #skip the first two rows because they have stuff in them (the title and the departure time)
