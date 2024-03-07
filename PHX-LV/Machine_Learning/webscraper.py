@@ -61,12 +61,16 @@ logLinks = []
         
 if allLTA:
     for node in allLTA:
+        #linkNotAcquired = True;
         url = node[0]
         browser.get(url)
         log_anchor_tag = browser.find_element(By.ID, 'trackLogLink')
         log_link = log_anchor_tag.get_attribute('href')
         print("log link: ", log_link)
         logLinks.append([log_link, node[1], node[2]])
+        #linkNotAcquired = False
+            
+                
         
 if logLinks:
     for link in logLinks:
