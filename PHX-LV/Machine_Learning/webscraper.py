@@ -1,4 +1,105 @@
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+import csv
 
+# the singular function:
+
+def remove_spaces_and_colons(input_string):
+    cleaned_string = input_string.replace(' ', '').replace(':', '')
+    return cleaned_string
+
+webdriver_path = './geckodriver'
+
+browser = webdriver.Firefox()
+
+url = 'https://www.flightaware.com/live/findflight?origin=kphx&destination=klax'
+
+browser.get(url)
+
+table = browser.find_element(By.ID, 'Results')
+table_body = table.find_element(By.TAG_NAME, 'tbody')
+
+#LTA stands for Link, Time, Aircraft 
+allLTA = []
+
+##conditions: the plane must be a B38M AND it must have arrived at the gate 
+
+for row in table_body.find_elements(By.CSS_SELECTOR, 'tr.ffinder-results-row-bordertop'):
+    aircraft_td = row.find_element(By.CSS_SELECTOR, 'td.ffinder-results-aircraft')
+    aircraft = aircraft_td.text
+    #print("aircraft: ", aircraft)
+    arrived_or_not_td = row.find_element(By.CSS_SELECTOR, 'td.ffinder-results-status')
+    status = arrived_or_not_td.text
+    #print("status: ", status)
+    departure_time_td = row.find_element(By.CSS_SELECTOR, 'td.ffinder-results-departure')
+    departure_unclean_text = departure_time_td.text
+    #print("departure unclean: ", departure_unclean_text)
+    departure = remove_spaces_and_colons(departure_unclean_text)
+    #print("departure: ", departure)
+    ident_td = row.find_element(By.CSS_SELECTOR, 'td.ffinder-results-ident')
+    ident_span = ident_td.find_element(By.TAG_NAME, 'span')
+    anchor_tag = ident_span.find_element(By.TAG_NAME, 'a')
+    link = anchor_tag.get_attribute('href')
+    #these links are gold!! hooray
+    #print("link: ", link)
+    if "Arrive" in status: 
+        #print("arrive is in status")
+        if (departure != "" and aircraft != ""):
+            allLTA.append([link, departure, aircraft])
+
+            
+if allLTA:
+    print("\n\n")
+    for node in allLTA:
+        print("link: ", node[0])
+        print("time: ", node[1])
+        print("aircraft: ", node[2])
+        print("\n")
+        
+logLinks = []
+        
+if allLTA:
+    for node in allLTA:
+        url = node[0]
+        browser.get(url)
+        log_anchor_tag = browser.find_element(By.ID, 'trackLogLink')
+        log_link = log_anchor_tag.get_attribute('href')
+        print("log link: ", log_link)
+        logLinks.append([log_link, node[1], node[2]])
+        
+if logLinks:
+    for link in logLinks:
+        print("link: ", node[0])
+        print("time: ", node[1])
+        print("aircraft: ", node[2])
+        print("\n")
+        
+if logLinks:
+    for node in logLinks:
+        url = node[0]
+        browser.get(url)
+        big_table = browser.find_element(By.ID, 'tracklogTable')
+        headers = ["Time (EST)", "Latitude", "Longitude", "Course", "kts", "mph", "feet", "Rate"]
+        table_body = big_table.find_element(By.TAG_NAME, 'tbody')
+        
+        title_string = node[1] + [node2]
+        
+        with open(title_string, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+        
+            for row in table_body.find_elements(By.TAG_NAME, 'tr'):
+                cells = [cell.text for cell in row.find_elements(By.TAG_NAME, 'td')]
+                
+                writer.writerow(cells)
+            
+            
+        
+
+            
+    
+
+browser.quit()
 
 
 
