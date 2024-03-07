@@ -13,7 +13,7 @@ webdriver_path = './geckodriver'
 
 browser = webdriver.Firefox()
 
-url = 'https://www.flightaware.com/live/findflight?origin=kphx&destination=klax'
+url = 'https://www.flightaware.com/live/findflight?origin=kphx&destination=klas'
 
 browser.get(url)
 
