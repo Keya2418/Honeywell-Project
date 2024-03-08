@@ -1,7 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 import csv
+import re
+import os
 
 # the singular function:
 
@@ -57,28 +60,55 @@ if allLTA:
         print("aircraft: ", node[2])
         print("\n")
         
-logLinks = []
+#logLinks = []
         
 if allLTA:
     for node in allLTA:
         #linkNotAcquired = True;
         url = node[0]
         browser.get(url)
-        log_anchor_tag = browser.find_element(By.ID, 'trackLogLink')
-        log_link = log_anchor_tag.get_attribute('href')
-        print("log link: ", log_link)
-        logLinks.append([log_link, node[1], node[2]])
+        try: 
+            log_anchor_tag = browser.find_element(By.ID, 'trackLogLink')
+            log_link = log_anchor_tag.get_attribute('href')
+            print("log link: ", log_link)
+        except NoSuchElementException:
+            print("Log link not found for ", url)
+            continue
+        
+        url = log_link
+        browser.get(url)
+        big_table = browser.find_element(By.ID, 'tracklogTable')
+        headers = ["Time (EST)", "Latitude", "Longitude", "Course", "kts", "mph", "feet"]
+        table_body = big_table.find_element(By.TAG_NAME, 'tbody')
+        
+        
+        output_path = "./scraped_data/"
+        
+        title_string = os.path.join(output_path, node[1] + "_" + node[2] + ".csv")
+        
+        
+        
+        with open(title_string, 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            
+            writer.writerow(headers)
+        
+            for row in table_body.find_elements(By.TAG_NAME, 'tr'):
+                cells = [re.sub(r'[^\x00-\x7F]+', '', cell.text.encode('utf-8', 'ignore').decode('utf-8')) for cell in row.find_elements(By.TAG_NAME, 'td')[:7]]
+                
+                writer.writerow(cells)
+        #logLinks.append([log_link, node[1], node[2]])
         #linkNotAcquired = False
             
                 
-        
+"""
 if logLinks:
     for link in logLinks:
         print("link: ", node[0])
         print("time: ", node[1])
         print("aircraft: ", node[2])
         print("\n")
-        
+
 if logLinks:
     for node in logLinks:
         url = node[0]
@@ -96,7 +126,7 @@ if logLinks:
                 cells = [cell.text for cell in row.find_elements(By.TAG_NAME, 'td')]
                 
                 writer.writerow(cells)
-            
+"""
             
         
 
