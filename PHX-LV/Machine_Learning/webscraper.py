@@ -1,3 +1,5 @@
+#WEBSCRAPER FOR LAT LONG ALT TIME
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -99,34 +101,7 @@ if allLTA:
                 writer.writerow(cells)
         #logLinks.append([log_link, node[1], node[2]])
         #linkNotAcquired = False
-            
-                
-"""
-if logLinks:
-    for link in logLinks:
-        print("link: ", node[0])
-        print("time: ", node[1])
-        print("aircraft: ", node[2])
-        print("\n")
-
-if logLinks:
-    for node in logLinks:
-        url = node[0]
-        browser.get(url)
-        big_table = browser.find_element(By.ID, 'tracklogTable')
-        headers = ["Time (EST)", "Latitude", "Longitude", "Course", "kts", "mph", "feet", "Rate"]
-        table_body = big_table.find_element(By.TAG_NAME, 'tbody')
         
-        title_string = node[1] + [node2]
-        
-        with open(title_string, 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-        
-            for row in table_body.find_elements(By.TAG_NAME, 'tr'):
-                cells = [cell.text for cell in row.find_elements(By.TAG_NAME, 'td')]
-                
-                writer.writerow(cells)
-"""
             
         
 
