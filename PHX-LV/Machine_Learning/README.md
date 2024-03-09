@@ -13,7 +13,7 @@ I got the lat, long, etc. data about every airport in the world from [The Global
 
 ## Past Work: Web Scraping
 
-After getting the airport coordinates squared away, I started building a webscraper that could scrape the Flightaware website for all the latitude, longitude, and height coordinates of each flight. The webscraper should be run every day in the morning and the evening to achieve the maximum amount of data as flights arrive at their gates. It stores all of the scraped data in CSVs. 
+After getting the airport coordinates squared away, I started building a webscraper that could scrape the Flightaware website for all the latitude, longitude, and height coordinates of each flight. The webscraper should be run every day in the morning and the evening to achieve the maximum amount of data as flights arrive at their gates. It stores all of the scraped data in CSVs. I also scraped the waypoints data so that we can gather weather data based on the longitude and latitude coordinates and also consider which waypoints were chosen in the route. 
 
 ## Current Work: Possible Addition of Noise
 
@@ -23,6 +23,6 @@ We are currently researching a way to add noise to the data so that more data ca
 
 After gathering a bunch of data, we plan to write a script for a 3-layer feed-forward neural network model. We will then train the model on the data and see how the results look. In the absence of detailed fuel usage data, we plan to consider the aircraft type instead. We will train the model on all types of aircraft first and also train it on a few specific common aircraft types to measure whether the aircraft type makes a difference on ETA. 
 
-## Future Work: Incorporating METAR data
+## Future Work: Incorporating Weather Data
 
-We will complete the initial model without considering weather first to test whether our process is correct and then collect METAR data for the specific dates and times of the flights. 
+We will complete the initial model without considering weather first to test whether our process is correct and then collect METAR data for the specific dates and times of the flights. I found this great API that lets you plug in lat/long coordinates and get the weather data for those coordinates: [Visual Crossing](https://www.visualcrossing.com/weather-history/40.7128,-74.0060/us/2024-03-08/2024-03-08). This will be great to use in conjunction with the waypoint and lat/long information. 
