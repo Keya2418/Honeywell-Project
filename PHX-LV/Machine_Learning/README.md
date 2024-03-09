@@ -1,5 +1,7 @@
 Date: 3/8/2024
-# LINK TO DATA: [Scraped_Data](https://drive.google.com/drive/folders/1s7jP6ba0UHtX865Id0fC97EOh2bNMHgx?usp=sharing)
+# LINKS TO DATA: 
+# [Scraped_LAT_LONG_ALT_Data](https://drive.google.com/drive/folders/1s7jP6ba0UHtX865Id0fC97EOh2bNMHgx?usp=sharing)
+# [Scraped_WAYPOINTS](https://drive.google.com/drive/folders/1c-i0-p0QLCpPKcamd_9Phn2Dy6Tub3qG?usp=sharing)
 
 Note: If you are not signed in to an ASU email you will not be able to view the folder.
 
