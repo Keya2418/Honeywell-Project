@@ -19,7 +19,7 @@ webdriver_path = './geckodriver'
 
 browser = webdriver.Firefox()
 
-url = 'https://www.flightaware.com/live/findflight?origin=KPHX&destination=KLAS'
+url = 'https://www.flightaware.com/live/findflight?origin=KPHX&destination=KLAX'
 
 browser.get(url)
 
@@ -96,7 +96,7 @@ if allLTA:
             table_body = big_table_body.find_element(By.TAG_NAME, 'tbody')
 
 
-            output_path = "./scraped_waypoints_KPHX_KLAS/"
+            output_path = "./scraped_waypoints_KPHX_KLAX/"
 
             title_string = os.path.join(output_path, node[1] + "_" + node[2] + "_WAYPOINTS" + ".csv")
 

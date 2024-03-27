@@ -66,65 +66,78 @@ if allLTA:
         
 #logLinks = []
         
-if allLTA:
-    for node in allLTA:
-        #linkNotAcquired = True;
-        url = node[0]
-        browser.get(url)
+output_path = "./scraped_eta_KPHX_KLAS/"
+#title_string = os.path.join(output_path, node[1] + "_" + node[2] + "_ETA" + ".csv")
+
+headers = ["Date", "Taxi Takeoff", "Average Delay Takeoff", "Gate Departure Actual", "Gate Departure Estimated", "Takeoff Actual", "Takeoff Estimated", "Taxi Landing", "Average Delay Landing", "Landing Actual", "Landing Estimated", "Gate Arrival Actual", "Gate Arrival Estimated"]
+
+with open(os.path.join(output_path, "output.csv"), 'a', newline='', encoding='utf-8') as csvfile:
+    writer = csv.writer(csvfile)
+
+    # Write headers only if file is empty
+    if os.path.getsize(os.path.join(output_path, "output.csv")) == 0:
+        writer.writerow(headers)
         
-        headers = ["Date", "Gate Departure Estimated", "Gate Departure Actual", "Takeoff Estimated", "Takeoff Actual", "Landing Estimated", "Landing Actual", "Gate Arrival Estimated", "Gate Arrival Actual"]
-        
-        list_of_stuff = []
-        
-        retry_attempts = 3
-        for attempt in range(retry_attempts):
-            try: 
-                date = browser.find_element(By.CSS_SELECTOR, 'span.flightPageSummaryDepartureDay')
-                dateText = date.text
-                list_of_stuff.append(dateText) 
-                largeContainer = browser.find_element(By.CLASS_NAME, 'flightPageDetails')
-                smallerContainer = largeContainer.find_element(By.CSS_SELECTOR, 'div[data-template="live/flight/detailMain"]')
-                timesTable = smallerContainer.find_element(By.CLASS_NAME, 'flightPageDataTableContainer')
-                littleSections = timesTable.find_elements(By.CLASS_NAME, 'flightPageDataTable')
-                
-                # Print the number of sections found
-                #print("Number of sections found:", len(littleSections))
-                    
-                for section in littleSections:
-                    sectionInLittleSections = section.find_elements(By.CSS_SELECTOR, 'div.flightPageDataTimesChild')
-                    ancillaryTextSection = timesTable.find_element(By.CLASS_NAME, 'flightPageDataAncillaryTextContainer')
-                    taxi_and_delay = ancillaryTextSection.find_elements(By.CLASS_NAME, 'flightPageDataAncillaryTextContainer')
-                    print("number of sections in taxi_and_delay: ", len(taxi_and_delay))
-                    
-                    for anotherSection in taxi_and_delay:
-                        info = anotherSection.find_element(By.CSS_SELECTOR, 'div')
-                        infoText = info.text
-                        list_of_stuff.append(infoText)
-                    
-                    for smallerSection in sectionInLittleSections:
-                        #print("inside smallerSection in sectionInLittleSections loop")
-                        flightPageDataActualTime = smallerSection.find_element(By.CSS_SELECTOR, 'div.flightPageDataActualTimeText')
-                        text_Actual = flightPageDataActualTime.text
-                        #print("Actual Time Text:", text_Actual)
-                        flightPageDataAncillary = smallerSection.find_element(By.CSS_SELECTOR, 'div.flightPageDataAncillaryText')
-                        text_Estimated = flightPageDataAncillary.text
-                        list_of_stuff.append(text_Actual)
-                        list_of_stuff.append(text_Estimated)
-                break
-            except NoSuchElementException:
-                print("Elements not found for ", url)
-                continue
-            except StaleElementReferenceException:
-                if attempt < (retry_attempts - 1):
-                        print("Stale element exception occurred. Retrying...")
-                else:
-                    print("Maximum retry attempts reached. Exiting.")
-                    break    
-        
-        
-        print("printing everything in list of stuff:")
-        for stuff in list_of_stuff:
-            print(stuff)
+    
+    if allLTA:
+        for node in allLTA:
+            #linkNotAcquired = True;
+            url = node[0]
+            browser.get(url)
+
+            list_of_stuff = []
+
+            retry_attempts = 3
+            for attempt in range(retry_attempts):
+                try: 
+                    date = browser.find_element(By.CSS_SELECTOR, 'span.flightPageSummaryDepartureDay')
+                    dateText = date.text
+                    list_of_stuff.append(dateText) 
+                    largeContainer = browser.find_element(By.CLASS_NAME, 'flightPageDetails')
+                    smallerContainer = largeContainer.find_element(By.CSS_SELECTOR, 'div[data-template="live/flight/detailMain"]')
+                    timesTable = smallerContainer.find_element(By.CLASS_NAME, 'flightPageDataTableContainer')
+                    littleSections = timesTable.find_elements(By.CLASS_NAME, 'flightPageDataTable')
+
+                    # Print the number of sections found
+                    #print("Number of sections found:", len(littleSections))
+
+                    for section in littleSections:
+                        sectionInLittleSections = section.find_elements(By.CSS_SELECTOR, 'div.flightPageDataTimesChild')
+                        ancillaryTextSection = timesTable.find_element(By.CLASS_NAME, 'flightPageDataAncillaryTextContainer')
+                        taxi_and_delay = ancillaryTextSection.find_elements(By.CLASS_NAME, 'flightPageDataAncillaryText')
+                        #print("number of sections in taxi_and_delay: ", len(taxi_and_delay))
+
+                        for anotherSection in taxi_and_delay:
+                            info = anotherSection.find_element(By.CSS_SELECTOR, 'div')
+                            infoText = info.text
+                            list_of_stuff.append(infoText)
+
+                        for smallerSection in sectionInLittleSections:
+                            #print("inside smallerSection in sectionInLittleSections loop")
+                            flightPageDataActualTime = smallerSection.find_element(By.CSS_SELECTOR, 'div.flightPageDataActualTimeText')
+                            text_Actual = flightPageDataActualTime.text
+                            #print("Actual Time Text:", text_Actual)
+                            flightPageDataAncillary = smallerSection.find_element(By.CSS_SELECTOR, 'div.flightPageDataAncillaryText')
+                            text_Estimated = flightPageDataAncillary.text
+                            list_of_stuff.append(text_Actual)
+                            list_of_stuff.append(text_Estimated)
+                    break
+                except NoSuchElementException:
+                    print("Elements not found for ", url)
+                    continue
+                except StaleElementReferenceException:
+                    if attempt < (retry_attempts - 1):
+                            print("Stale element exception occurred. Retrying...")
+                    else:
+                        print("Maximum retry attempts reached. Exiting.")
+                        break    
+
+            writer.writerow(list_of_stuff)
+
+            print("printing everything in list of stuff:")
+            for stuff in list_of_stuff:
+                print(stuff)
+
 
             
 
