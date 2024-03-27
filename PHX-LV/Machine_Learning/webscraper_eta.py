@@ -82,20 +82,30 @@ if allLTA:
                 date = browser.find_element(By.CSS_SELECTOR, 'span.flightPageSummaryDepartureDay')
                 dateText = date.text
                 list_of_stuff.append(dateText) 
-                timesTable = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'flightPageDataTableContainer')))
-                test = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'flightPageDataTable')))
+                largeContainer = browser.find_element(By.CLASS_NAME, 'flightPageDetails')
+                smallerContainer = largeContainer.find_element(By.CSS_SELECTOR, 'div[data-template="live/flight/detailMain"]')
+                timesTable = smallerContainer.find_element(By.CLASS_NAME, 'flightPageDataTableContainer')
                 littleSections = timesTable.find_elements(By.CLASS_NAME, 'flightPageDataTable')
+                
                 # Print the number of sections found
-                print("Number of sections found:", len(littleSections))
+                #print("Number of sections found:", len(littleSections))
                     
                 for section in littleSections:
                     sectionInLittleSections = section.find_elements(By.CSS_SELECTOR, 'div.flightPageDataTimesChild')
+                    ancillaryTextSection = timesTable.find_element(By.CLASS_NAME, 'flightPageDataAncillaryTextContainer')
+                    taxi_and_delay = ancillaryTextSection.find_elements(By.CLASS_NAME, 'flightPageDataAncillaryTextContainer')
+                    print("number of sections in taxi_and_delay: ", len(taxi_and_delay))
+                    
+                    for anotherSection in taxi_and_delay:
+                        info = anotherSection.find_element(By.CSS_SELECTOR, 'div')
+                        infoText = info.text
+                        list_of_stuff.append(infoText)
                     
                     for smallerSection in sectionInLittleSections:
-                        print("inside smallerSection in sectionInLittleSections loop")
+                        #print("inside smallerSection in sectionInLittleSections loop")
                         flightPageDataActualTime = smallerSection.find_element(By.CSS_SELECTOR, 'div.flightPageDataActualTimeText')
-                        print("Actual Time Text:
                         text_Actual = flightPageDataActualTime.text
+                        #print("Actual Time Text:", text_Actual)
                         flightPageDataAncillary = smallerSection.find_element(By.CSS_SELECTOR, 'div.flightPageDataAncillaryText')
                         text_Estimated = flightPageDataAncillary.text
                         list_of_stuff.append(text_Actual)
@@ -111,6 +121,8 @@ if allLTA:
                     print("Maximum retry attempts reached. Exiting.")
                     break    
         
+        
+        print("printing everything in list of stuff:")
         for stuff in list_of_stuff:
             print(stuff)
 
