@@ -13,7 +13,7 @@ I got the lat, long, etc. data about every airport in the world from [The Global
 
 ## Past Work: Web Scraping
 
-After getting the airport coordinates squared away, I started building a webscraper that could scrape the Flightaware website for all the latitude, longitude, and height coordinates of each flight. The webscraper should be run every day in the morning and the evening to achieve the maximum amount of data as flights arrive at their gates. It stores all of the scraped data in CSVs. I also scraped the waypoints data so that we can gather weather data based on the longitude and latitude coordinates and also consider which waypoints were chosen in the route. 
+After getting the airport coordinates squared away, I started building a webscraper that could scrape the Flightaware website for all the latitude, longitude, and height coordinates of each flight. The webscraper should be run every day in the morning to achieve the maximum amount of data as flights arrive at their gates. It stores all of the scraped data in CSVs. There are three total webscrapers: webscraper.py (the longitude+latitude+height+time of the flights as well as mph, course, and kts), webscraper_waypoints.py (scrapes the waypoints the flight visited), and webscraper_eta.py (scrapes info such as taxi time, time of arrival, etc.).
 
 ## Current Work: Possible Addition of Noise
 
