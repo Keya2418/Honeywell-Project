@@ -1,10 +1,11 @@
-# WEBSCRAPER FOR WAYPOINTS
-
+#WEBSCRAPER ETA 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import csv
 import re
 import os
@@ -70,57 +71,50 @@ if allLTA:
         #linkNotAcquired = True;
         url = node[0]
         browser.get(url)
+        
+        headers = ["Date", "Gate Departure Estimated", "Gate Departure Actual", "Takeoff Estimated", "Takeoff Actual", "Landing Estimated", "Landing Actual", "Gate Arrival Estimated", "Gate Arrival Actual"]
+        
+        list_of_stuff = []
+        
         retry_attempts = 3
         for attempt in range(retry_attempts):
             try: 
-                surrounding_div = browser.find_element(By.CSS_SELECTOR, 'div[data-template="live/flight/data"]')
-                div_with_link = surrounding_div.find_element(By.CSS_SELECTOR, '.flightPageDataRowTall')
-                anchor_tag = div_with_link.find_element(By.CSS_SELECTOR, '.flightPageLink')
-                log_link = anchor_tag.get_attribute('href')
-                print("log link: ", log_link)
+                date = browser.find_element(By.CSS_SELECTOR, 'span.flightPageSummaryDepartureDay')
+                dateText = date.text
+                list_of_stuff.append(dateText) 
+                timesTable = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'flightPageDataTableContainer')))
+                test = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'flightPageDataTable')))
+                littleSections = timesTable.find_elements(By.CLASS_NAME, 'flightPageDataTable')
+                # Print the number of sections found
+                print("Number of sections found:", len(littleSections))
+                    
+                for section in littleSections:
+                    sectionInLittleSections = section.find_elements(By.CSS_SELECTOR, 'div.flightPageDataTimesChild')
+                    
+                    for smallerSection in sectionInLittleSections:
+                        print("inside smallerSection in sectionInLittleSections loop")
+                        flightPageDataActualTime = smallerSection.find_element(By.CSS_SELECTOR, 'div.flightPageDataActualTimeText')
+                        print("Actual Time Text:
+                        text_Actual = flightPageDataActualTime.text
+                        flightPageDataAncillary = smallerSection.find_element(By.CSS_SELECTOR, 'div.flightPageDataAncillaryText')
+                        text_Estimated = flightPageDataAncillary.text
+                        list_of_stuff.append(text_Actual)
+                        list_of_stuff.append(text_Estimated)
                 break
             except NoSuchElementException:
-                print("An element was not found for ", url)
+                print("Elements not found for ", url)
                 continue
             except StaleElementReferenceException:
                 if attempt < (retry_attempts - 1):
-                    print("Stale element exception occurred. Retrying...")
+                        print("Stale element exception occurred. Retrying...")
                 else:
                     print("Maximum retry attempts reached. Exiting.")
-                    break
-
-            url = log_link
-            browser.get(url)
-            headers = ["Name", "Latitude", "Longitude", "Outbound Course", "Distance this Leg", "Distance Remaining", "Distance Flown", "Type"]
-            big_table_body = browser.find_element(By.TAG_NAME, 'tbody')
-            table_body = big_table_body.find_element(By.TAG_NAME, 'tbody')
-
-
-            output_path = "./scraped_waypoints_KPHX_KLAS/"
-
-            title_string = os.path.join(output_path, node[1] + "_" + node[2] + "_WAYPOINTS" + ".csv")
-
-
-
-            with open(title_string, 'w', newline='', encoding='utf-8') as csvfile:
-                writer = csv.writer(csvfile)
-
-                writer.writerow(headers)
-
-                for row in table_body.find_elements(By.TAG_NAME, 'tr'):
-                    cells = [re.sub(r'[^\x00-\x7F]+', '', cell.text.encode('utf-8', 'ignore').decode('utf-8')) for cell in row.find_elements(By.TAG_NAME, 'td')]
-
-                    writer.writerow(cells)
-            #logLinks.append([log_link, node[1], node[2]])
-            #linkNotAcquired = False
-            
-                
-
-            
+                    break    
         
+        for stuff in list_of_stuff:
+            print(stuff)
 
             
-    
 
 browser.quit()
 
@@ -139,4 +133,6 @@ browser.quit()
 
 
 
-            
+
+
+
