@@ -1,6 +1,6 @@
 Date: 3/8/2024
 # LINKS TO DATA: 
-# [Data](https://drive.google.com/drive/folders/1_xI6kG4z-Dl10iWgWJBBkTO-BhMy8TBJ?usp=drive_link){:target="_blank"}
+# [Data](https://drive.google.com/drive/folders/1_xI6kG4z-Dl10iWgWJBBkTO-BhMy8TBJ?usp=drive_link)
 
 Note: If you are not signed in to an ASU email you will not be able to view the folder.
 
