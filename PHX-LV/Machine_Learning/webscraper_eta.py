@@ -46,6 +46,7 @@ for row in table_body.find_elements(By.CSS_SELECTOR, 'tr.ffinder-results-row-bor
     #print("departure: ", departure)
     ident_td = row.find_element(By.CSS_SELECTOR, 'td.ffinder-results-ident')
     ident_span = ident_td.find_element(By.TAG_NAME, 'span')
+    flight_number_text = ident_span.text
     anchor_tag = ident_span.find_element(By.TAG_NAME, 'a')
     link = anchor_tag.get_attribute('href')
     #these links are gold!! hooray
@@ -53,7 +54,7 @@ for row in table_body.find_elements(By.CSS_SELECTOR, 'tr.ffinder-results-row-bor
     if "Arrive" in status: 
         #print("arrive is in status")
         if (departure != "" and aircraft != ""):
-            allLTA.append([link, departure, aircraft])
+            allLTA.append([link, departure, aircraft, flight_number_text])
 
             
 if allLTA:
@@ -62,6 +63,7 @@ if allLTA:
         print("link: ", node[0])
         print("time: ", node[1])
         print("aircraft: ", node[2])
+        print("flight number:", node[3])
         print("\n")
         
 #logLinks = []
@@ -69,7 +71,7 @@ if allLTA:
 output_path = "./scraped_eta_KPHX_KLAS/"
 #title_string = os.path.join(output_path, node[1] + "_" + node[2] + "_ETA" + ".csv")
 
-headers = ["Date", "Taxi Takeoff", "Average Delay Takeoff", "Gate Departure Actual", "Gate Departure Estimated", "Takeoff Actual", "Takeoff Estimated", "Taxi Landing", "Average Delay Landing", "Landing Actual", "Landing Estimated", "Gate Arrival Actual", "Gate Arrival Estimated"]
+headers = ["Flight Number", "Date", "Taxi Takeoff", "Average Delay Takeoff", "Gate Departure Actual", "Gate Departure Estimated", "Takeoff Actual", "Takeoff Estimated", "Taxi Landing", "Average Delay Landing", "Landing Actual", "Landing Estimated", "Gate Arrival Actual", "Gate Arrival Estimated"]
 
 with open(os.path.join(output_path, "output.csv"), 'a', newline='', encoding='utf-8') as csvfile:
     writer = csv.writer(csvfile)
@@ -86,6 +88,8 @@ with open(os.path.join(output_path, "output.csv"), 'a', newline='', encoding='ut
             browser.get(url)
 
             list_of_stuff = []
+            
+            list_of_stuff.append(node[3])
 
             retry_attempts = 3
             for attempt in range(retry_attempts):
