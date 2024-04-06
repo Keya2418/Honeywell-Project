@@ -32,3 +32,7 @@ A feedforward neural network processes data in a one-way direction, from input n
 
 ## Feedforward Neural Network: Our Model 
 The FNN loads flight and waypoint data, preprocesses it, and plots altitude vs. time. It is designed for data exploration and preparation, to predict flight arrival times using datapoints such as flight altitude, speed, departure and arrival times (both expected and actual). Currrently, we have placeholders for building, training, and evaluating a neural network model. Once completed, the model will utilize features extracted from the data to make predictions on flight arrival time.
+
+## **Summary Report for KG**
+https://docs.google.com/document/d/1AoNvQKrU3h97VzLo126OoR3y-GjKlIjDG3WUqBmR-vU/edit
+
