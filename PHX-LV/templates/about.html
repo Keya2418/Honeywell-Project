@@ -1,0 +1,44 @@
+
+<html>
+<head>
+    <title>About Our Project</title>
+    <style>
+
+        html, body {
+            background-color:black;
+            color:white;
+        }
+        .button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color:white;
+            color:black;
+            border-radius:5px;
+        }
+        h3 {
+            font-weight:normal;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div style="display:flex" style="align-items:center; text-align:center;">
+        <div style="flex:1;"><img src="{{ url_for('static', filename='iraAFulton.png') }}" style="width:400px; height:150px"></div>
+        <div style="flex:2; font-size:50px; margin-right:150px; margin-left:50px; align-items:center; text-align:center;">Honeywell:<br> Improving Flight Plans with Big Data and AI/ML</div>
+        <div style="flex:1;"><img src="{{ url_for('static', filename='honeywell.png') }}" style="margin-top: 30px; width:300px; height: 100px"></div>
+    </div>
+    <h1>1. The Problem</h1>
+    <h3>Flight-planning is a multi-faceted task that spans across multiple domains, including those of logistics, finance, physics, mathematics, and academia.</h3>
+    <h1>2. Data Collection Issues</h1>
+    <h3>Due to the competitive nature of the commercial flight industry, it is paramount that data be kept secret from other flight companies. Access to pivotal flight 
+        often requires signing a Non-Disclosure Agreement (NDA) with a certain company. Due to our inability to obtain NDAs from Honeywell, our group had to look elsewhere for 
+        flight data. The options on the open source Internet are slim, but ended up enabling us to at least improve the ETA metric of flight-planning. 
+    </h3>
+    <h1>3. Our Model</h1>
+    <h1>4. Demo</h1>
+    <a style="text-decoration:none" class="button" href="/">Demo</a>
+</body>
+
+
+</html>

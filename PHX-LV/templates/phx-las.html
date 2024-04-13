@@ -7,11 +7,109 @@
       href="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Widgets/widgets.css"
       rel="stylesheet"
     />
+    <title>ETA Calculator</title>
+    <style>
+      .container {
+        width: 100%; 
+      }
 
-    <link href="style.css" rel="stylesheet" />
+      .box {
+          display: inline-block; 
+          /*width: 50%; */
+          margin: 0 auto; 
+          /*border: 1px solid black; */
+          box-sizing: border-box; 
+          align-items: center;
+      }
+      
+      html, body {
+        overflow: hidden;
+        margin: 0px;
+        padding: 0px;
+        height: 100%;
+        width:100%;
+        color:white;
+        background-color:black;
+      }
+
+      .bigContainer {
+        align-items: center;
+        text-align:center;
+      }
+
+      .topBox {
+        align-items: center;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom:0.25%;
+        margin-top:0.5%;
+        width:100%;
+      }
+      .form-group label {
+          /*display: block;*/
+          display: inline-block;
+          width: 100px;
+          text-align:right;
+          margin-right:10px;
+      }
+      .form-group input {
+          display: inline-block;
+          width: 200px; 
+          padding: 10px; 
+          border: 1px solid #ccc; 
+          border-radius: 5px; 
+          box-sizing: border-box; 
+      }
+
+      #cesiumContainer {
+        margin-top:3%;
+        height: 100%;
+        width: 60%;
+      }
+
+      .button {
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color:white;
+        color:black;
+        border-radius:5px;
+      }
+      
+
+    </style>
   </head>
   <body>
-    <div id="cesiumContainer"></div>
+
+    <div class="bigContainer">
+      <div class="box" id="topBox">
+        <div class="horizontal-box" style="display:flex">
+          <div class="section1" style="flex:1"></div>
+          <div class="section2" style="flex:2"><center style="font-size:20px; margin-top:1%">You are about to leave for Las Vegas from Phoenix.<br> What time will you get there?</center></div>
+          <div class="section3" style="flex:1"></div>
+        </div>
+        
+        <div class="form-group" style="margin-top:0.5%">
+          <label for="timeBox">Enter a Time:</label>
+          <input type="text" id="timeBox" name="timeBox" placeholder="00:00:00">
+          <label for="dateBox">Enter a Date:</label>
+          <input type="text" id="dateBox" name="dateBox" placeholder="MM/DD/YYYY">
+          <label for="ETABox" style="margin-left:10px">Resulting ETA:</label>
+          <input type="text" id="ETABox" name="ETABox" placeholder="ETA will appear here">
+        </div>
+      </div>
+      <div class="form-group">
+        <button class="button">Calculate ETA</button>
+      </div>
+      <div class="box" id="cesiumContainer"></div>
+      <div class="form-group" style="margin-top:1%">
+        <div class="section1" style="flex:1"><a href="/about" style="text-decoration: none" class="button">About This Project</a></div>
+      </div>
+
+    </div>
+
+    
     <script>
       // Get your token from https://cesium.com/ion/tokens
       Cesium.Ion.defaultAccessToken =

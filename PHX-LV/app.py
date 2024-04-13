@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import math
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 @app.route('/')
 
@@ -40,6 +40,11 @@ def index():
     #print(f"Flight data: {flight_data}")
 
     return render_template('phx-las.html', flight_data=json.dumps(flight_data))
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
