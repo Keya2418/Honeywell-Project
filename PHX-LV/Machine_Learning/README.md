@@ -36,3 +36,9 @@ The FNN loads flight and waypoint data, preprocesses it, and plots altitude vs. 
 ## **Summary Report for KG**
 https://docs.google.com/document/d/1AoNvQKrU3h97VzLo126OoR3y-GjKlIjDG3WUqBmR-vU/edit
 
+## Running the UI in VScode**
+open the entire folder in vs code.
+make sure to check if you have Flask installed. if not, enter this command in your terminal --> pip install Flask pandas
+run this command --> python app.py
+Select 'go live' option in the bottom right of the window
+
