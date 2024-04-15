@@ -8,6 +8,12 @@
       rel="stylesheet"
     />
     <title>ETA Calculator</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"> </script>
+    <script type=text/javascript> $(function() { $("#calculate-eta").click( event => { 
+      $.getJSON('/etaCalculation', { }, function(data) { });
+       return false; });
+       });
+        </script> 
     <style>
       .container {
         width: 100%; 
@@ -92,7 +98,7 @@
         
         <div class="form-group" style="margin-top:0.5%">
           <label for="timeBox">Enter a Time:</label>
-          <input type="text" id="timeBox" name="timeBox" placeholder="00:00:00">
+          <input type="text" id="timeBox" name="timeBox" placeholder="00:00:00" pattern="\d\d:\d\d:\d\d$">
           <label for="dateBox">Enter a Date:</label>
           <input type="text" id="dateBox" name="dateBox" placeholder="MM/DD/YYYY">
           <label for="ETABox" style="margin-left:10px">Resulting ETA:</label>
@@ -100,7 +106,7 @@
         </div>
       </div>
       <div class="form-group">
-        <button class="button">Calculate ETA</button>
+        <button class="button" id="calculate-eta">Calculate ETA</button>
       </div>
       <div class="box" id="cesiumContainer"></div>
       <div class="form-group" style="margin-top:1%">
