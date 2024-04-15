@@ -1,8 +1,32 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, g
 import csv
 import json
 import pandas as pd
 import math
+import joblib
+import datetime
+import torch.nn as nn
+
+import torch
+import numpy as np
+
+
+# class NeuralNetwork(nn.Module):
+#     def __init__(self):
+#         """This is just an interface for when we load in the trained model"""
+#         pass
+
+#     def forward(self, x):
+#         """This is just an interface for when we load in the trained model"""
+#         pass
+
+#     def predict(self, take_off_actual, take_off_estimated, landing_estimated, average_delay):
+#         """This is just an interface for when we load in the trained model"""
+#         pass
+    
+#     def __str__(self):      # The toString method for the class
+#         """This is just an interface for when we load in the trained model"""
+#         pass
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -45,6 +69,28 @@ def index():
 def about():
     return render_template('about.html')
 
+@app.route('/etaCalculation')
+def calculateEta():
+
+    model = ensureGetModel()
+    time = model.predict(8 * 60 + 30, 8 * 60 + 40, 9 * 60 + 50, 1)
+    print(time)
+
+    hours = time / 60
+    minutes = time % 60
+
+    dt = str(datetime.time(hour=int(hours), minute=int(minutes)))
+    print(dt)
+    return dt
+
+
+def ensureGetModel():
+    model = getattr(g, '_model', None)
+    if model is None:
+        g._model = torch.jit.load('trained-model.pt').eval()
+    return g._model
 
 if __name__ == '__main__':
     app.run(debug=True)
+    # print(model)
+
