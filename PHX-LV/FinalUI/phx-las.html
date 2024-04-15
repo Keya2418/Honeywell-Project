@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Cesium.js"></script>
+    <link
+      href="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Widgets/widgets.css"
+      rel="stylesheet"
+    />
+    <title>ETA Calculator</title>
+    <style>
+      .container {
+        width: 100%; 
+      }
+
+      .box {
+          display: inline-block; 
+          /*width: 50%; */
+          margin: 0 auto; 
+          /*border: 1px solid black; */
+          box-sizing: border-box; 
+          align-items: center;
+      }
+      
+      html, body {
+        overflow: hidden;
+        margin: 0px;
+        padding: 0px;
+        height: 100%;
+        width:100%;
+        color:rgb(252, 242, 242);
+        background-color:rgb(11, 10, 10);
+        background-image: url('static/2.jpg');
+        background-size: cover;
+        background-repeat: no-repeat; 
+        background-attachment: fixed
+      }
+
+      .bigContainer {
+        align-items: center;
+        text-align:center;
+      }
+
+      .topBox {
+        align-items: center;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom:0.25%;
+        margin-top:0.5%;
+        width:100%;
+      }
+      .form-group label {
+          /*display: block;*/
+          display: inline-block;
+          width: 100px;
+          text-align:right;
+          margin-right:10px;
+      }
+      .form-group input {
+          display: inline-block;
+          width: 200px; 
+          padding: 10px; 
+          border: 1px solid #ccc; 
+          border-radius: 5px; 
+          box-sizing: border-box; 
+      }
+
+      #cesiumContainer {
+        margin-top:1%;
+        height: 100%;
+        width: 80%;
+      }
+
+      .button {
+        padding: 10px;
+        border: none; /* Removed the border */
+        background-color: rgb(12, 12, 12);
+        color: rgb(247, 243, 243);
+        transition: color 0.3s ease;
+        border-radius: 5px;
+        font-size: 1.5em;
+      }
+      .button:hover {
+        color: #3793f5;
+        background-color: rgba(0, 123, 255, 0.1);
+      }
+
+      .links {
+        margin: 0 0; /* Adjusted the left margin to 0 */
+        font-size: 1.5em;
+        color: white;
+        transition: color 0.3s ease;
+        padding: 5px 2px; /* Padding around the text inside the button */
+        display: inline-block; /* Display as inline block to respect padding and border */
+      }
+
+      .links:hover {
+        color: #3793f5;
+        background-color: rgba(0, 123, 255, 0.1);
+        text-decoration: underline;
+      }
+      
+
+    </style>
+  </head>
+  <body>
+
+    <div class="bigContainer">
+      <div class="box" id="topBox">
+        <div class="horizontal-box" style="display:flex">
+          <div class="section1" style="flex:1"></div>
+          <div class="section2" style="flex:2"><center style="font-size:30px; margin-top:1%; margin-bottom: 2%;">Flight path from Phoenix to Las Vegas.<br> </center></div>
+          <div class="section3" style="flex:1"></div>
+        </div>
+        
+        <div class="form-group" style="margin-top:0.5%">
+          <label for="timeBox">Enter a Time:</label>
+          <input type="text" id="timeBox" name="timeBox" placeholder="00:00:00">
+          <label for="dateBox">Enter a Date:</label>
+          <input type="text" id="dateBox" name="dateBox" placeholder="MM/DD/YYYY">
+          <label for="ETABox" style="margin-left:10px">Resulting ETA:</label>
+          <input type="text" id="ETABox" name="ETABox" placeholder="ETA will appear here">
+        </div>
+      </div>
+      <div class="form-group">
+        <button class="button">Calculate ETA</button>
+      </div>
+      <div class="box" id="cesiumContainer"></div>
+      <div class="form-group" style="margin-top:1%">
+        <div class="section1" style="flex:1"><a href="about.html" style="text-decoration: none" class="links">About This Project</a></div>
+      </div>
+
+    </div>
+
+
+                          <!-- python script starts here-->
+      
+    
+    
+    <script>
+      // Get your token from https://cesium.com/ion/tokens
+      Cesium.Ion.defaultAccessToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkY2Q3OGJlMS1mMGNiLTQ5ZDAtOGUzMS03YWM4NGI0MzM1OGMiLCJpZCI6MTczMDU2LCJpYXQiOjE2OTc4NTA3MTN9.RTIXrAdEadgrPTs4O5PWk2N15nLq5_ALIIrohygTiwI";
+      // Keep your `Cesium.Ion.defaultAccessToken = 'your_token_here'` line from before here. 
+
+        const viewer = new Cesium.Viewer('cesiumContainer')
+        
+        // STEP 4 CODE (replaces steps 2 and 3)
+        // Keep your `Cesium.Ion.defaultAccessToken = 'your_token_here'` line from before here. 
+
+        //follow this format: 
+        // '[{"longitude":-122.39053,"latitude":37.61779,"height":-27.32},{"longitude":, "latitude":, "height": }]'
+        const flightData = JSON.parse('{{ flight_data | safe }}');
+
+        const flightData2 = JSON.parse('[{"longitude":-112.007,"latitude":33.261,"height":1135},{"longitude":-112.041,"latitude":33.259,"height":3100},{"longitude":-112.118,"latitude":33.261,"height":10000},{"longitude":-112.118,"latitude":33.318,"height":13000},{"longitude":-112.123,"latitude":33.375,"height":15400},{"longitude":-112.201,"latitude":34.017,"height":24900},{"longitude":-112.301,"latitude":34.116,"height":28000},{"longitude":-112.528,"latitude":34.34,"height":28000},{"longitude":-113.042,"latitude":34.451,"height":28000},{"longitude":-113.245,"latitude":34.584,"height":28000},{"longitude":-113.263,"latitude":35.003,"height":28000},{"longitude":-113.421,"latitude":35.171,"height":28000},{"longitude":-113.511,"latitude":35.266,"height":28000},{"longitude":-114.092,"latitude":35.455,"height":19500},{"longitude":-114.201,"latitude":35.503,"height":15900},{"longitude":-114.314,"latitude":35.574,"height":11700},{"longitude":-114.393,"latitude":36.023,"height":8900},{"longitude":-114.436,"latitude":36.044,"height":7400},{"longitude":-115.091,"latitude":36.048,"height":2181}]')
+
+
+       // const flightData2 = JSON.parse('[{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":, "latitude":, "height":}]')
+
+
+        //const flightData2 = JSON.parse(
+          //  '[{"longitude":-0.461941,"latitude":51.4706,"height":83},{"longitude":-122.39053,"latitude":37.61779,"height":-27.32}]'
+        //);
+
+        /* Initialize the viewer clock:
+        Assume the radar samples are 30 seconds apart, and calculate the entire flight duration based on that assumption.
+        Get the start and stop date times of the flight, where the start is the known flight departure time (converted from PST 
+            to UTC) and the stop is the start plus the calculated duration. (Note that Cesium uses Julian dates. See 
+            https://simple.wikipedia.org/wiki/Julian_day.)
+        Initialize the viewer's clock by setting its start and stop to the flight start and stop times we just calculated. 
+        Also, set the viewer's current time to the start time and take the user to that time. 
+        */
+
+        
+        const timeStepInSeconds = 30;
+        const totalSeconds = timeStepInSeconds * (flightData.length - 1);
+        const start = Cesium.JulianDate.fromIso8601("2024-02-26T23:28:00Z");
+        const stop = Cesium.JulianDate.addSeconds(start, totalSeconds, new Cesium.JulianDate());
+        viewer.clock.startTime = start.clone();
+        viewer.clock.stopTime = stop.clone();
+        viewer.clock.currentTime = start.clone();
+        viewer.timeline.zoomTo(start, stop);
+        // Speed up the playback speed 50x.
+        viewer.clock.multiplier = 50;
+        // Start playing the scene.
+        viewer.clock.shouldAnimate = true;
+
+        // The SampledPositionedProperty stores the position and timestamp for each sample along the radar sample series.
+        const positionProperty = new Cesium.SampledPositionProperty();
+        const positionProperty2 = new Cesium.SampledPositionProperty();
+
+        //red flight data
+        for (let i = 0; i < flightData.length; i++) {
+          const redDataPoint = flightData[i];
+
+          // Declare the time for this individual sample and store it in a new JulianDate instance.
+          const time = Cesium.JulianDate.addSeconds(start, i * timeStepInSeconds, new Cesium.JulianDate());
+          const position = Cesium.Cartesian3.fromDegrees(redDataPoint.longitude, redDataPoint.latitude, redDataPoint.height);
+          // Store the position along with its timestamp.
+          // Here we add the positions all upfront, but these can be added at run-time as samples are received from a server.
+          positionProperty.addSample(time, position);
+
+          viewer.entities.add({
+              description: `Location: (${redDataPoint.longitude}, ${redDataPoint.latitude}, ${redDataPoint.height})`,
+              position: position,
+              point: { pixelSize: 10, color: Cesium.Color.RED }
+          });
+        }
+
+        //green flight data
+        for (let i = 0; i < flightData2.length; i++) {
+          const greenDataPoint = flightData2[i];
+
+          // Declare the time for this individual sample and store it in a new JulianDate instance.
+          const time = Cesium.JulianDate.addSeconds(start, i * timeStepInSeconds, new Cesium.JulianDate());
+          const position = Cesium.Cartesian3.fromDegrees(greenDataPoint.longitude, greenDataPoint.latitude, greenDataPoint.height);
+          // Store the position along with its timestamp.
+          // Here we add the positions all upfront, but these can be added at run-time as samples are received from a server.
+          positionProperty2.addSample(time, position);
+
+          viewer.entities.add({
+              description: `Location: (${greenDataPoint.longitude}, ${greenDataPoint.latitude}, ${greenDataPoint.height})`,
+              position: position,
+              point: { pixelSize: 10, color: Cesium.Color.GREEN }
+          });
+        }
+
+        // STEP 6 CODE (airplane entity)
+        async function loadModel() {
+        // Load the glTF model from Cesium ion.
+        const airplaneUri = await Cesium.IonResource.fromAssetId(2323133);
+        const airplaneEntity = viewer.entities.add({
+            availability: new Cesium.TimeIntervalCollection([ new Cesium.TimeInterval({ start: start, stop: stop }) ]),
+            position: positionProperty,
+            // Attach the 3D model instead of the green point.
+            model: { uri: airplaneUri },
+            // Automatically compute the orientation from the position.
+            orientation: new Cesium.VelocityOrientationProperty(positionProperty),    
+            path: new Cesium.PathGraphics({ width: 3 })
+        });
+
+        const airplaneEntity2 = viewer.entities.add({
+          availability: new Cesium.TimeIntervalCollection([ new Cesium.TimeInterval({ start: start, stop: stop }) ]),
+            position: positionProperty2,
+            // Attach the 3D model instead of the green point.
+            model: { uri: airplaneUri },
+            // Automatically compute the orientation from the position.
+            orientation: new Cesium.VelocityOrientationProperty(positionProperty2),    
+            path: new Cesium.PathGraphics({ width: 3 })
+        })
+        
+        //viewer.trackedEntity = airplaneEntity;
+
+        }
+
+        
+
+    loadModel();
+    
+
+    </script>
+  </body>
+</html>
+
+
+<!--   
+    Notes about flight planning: 
+    T O C : top of climb (the point at which the planned climb to cruise altitude is completed)
+    
+    PACOTS: The Pacific Organized Track System. It's a flexible set of aircraft route tracks that primarily link commercial air transport 
+    (this one is focused on Japan, Southeast Asia, and Hawaii)
+
+    
+
+
+
+
+-->
