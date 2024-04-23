@@ -9,7 +9,6 @@ __pycache__/
 # Specific CSV files should not be stored in this repository
 # At the moment, test-cases should be transferred in full between
 # individuals and not through the repository.
-*.csv
 *.cml
 *.xlsx
 
