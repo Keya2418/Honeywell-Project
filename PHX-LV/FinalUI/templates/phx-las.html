@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <title>ETA Calculator</title>
+    <style>
+      .container {
+        width: 100%; 
+      }
+
+      .box {
+          display: inline-block; 
+          /*width: 50%; */
+          margin: 0 auto; 
+          /*border: 1px solid black; */
+          box-sizing: border-box; 
+          align-items: center;
+      }
+      
+      html, body {
+        /*overflow: hidden;*/
+        margin: 0px;
+        padding: 0px;
+        height: 100%;
+        width:100%;
+        color:rgb(252, 242, 242);
+        background-color:rgb(11, 10, 10);
+        background-image: url('assets/static/2.jpg');
+        background-size: cover;
+        background-repeat: no-repeat; 
+        background-attachment: fixed
+      }
+
+      .bigContainer {
+        align-items: center;
+        text-align:center;
+      }
+
+      .topBox {
+        align-items: center;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom:0.25%;
+        margin-top:0.5%;
+        width:100%;
+      }
+      .form-group label {
+          /*display: block;*/
+          display: inline-block;
+          width: 100px;
+          text-align:right;
+          margin-right:10px;
+      }
+      .form-group input {
+          display: inline-block;
+          width: 200px; 
+          padding: 10px; 
+          border: 1px solid #ccc; 
+          border-radius: 5px; 
+          box-sizing: border-box; 
+      }
+
+      #cesiumContainer {
+        margin-top:1%;
+        height: 100%;
+        width: 100%;
+      }
+
+      .button {
+        padding: 10px;
+        border: none; 
+        background-color: rgb(12, 12, 12);
+        color: rgb(247, 243, 243);
+        transition: color 0.3s ease;
+        border-radius: 5px;
+        font-size: 1.5em;
+      }
+      .button:hover {
+        color: #3793f5;
+        background-color: rgba(0, 123, 255, 0.1);
+      }
+
+      .links {
+        margin: 0 0; 
+        font-size: 1.5em;
+        color: white;
+        transition: color 0.3s ease;
+        padding: 5px 2px; 
+        display: inline-block; 
+      }
+
+      .links:hover {
+        color: #3793f5;
+        background-color: rgba(0, 123, 255, 0.1);
+        text-decoration: underline;
+      }
+      
+
+    </style>
+  </head>
+  <body>
+
+    <div class="bigContainer">
+      <div class="box" id="topBox">
+        <div class="horizontal-box" style="display:flex">
+          <div class="section1" style="flex:1"></div>
+          <div class="section2" style="flex:2"><center id="centerTopTextBox" style="font-size:30px; margin-top:1%; margin-bottom: 2%;">Flight path from Phoenix to Las Vegas.<br> </center></div>
+          <div class="section3" style="flex:1"></div>
+        </div>
+        
+        <div class="form-group" style="margin-top:0.5%">
+          <label for="timeBox">Enter a Time in 24-hour format:</label>
+          <input type="text" id="timeBox" name="timeBox" placeholder="00:00">
+          <label for="dateBox">Enter a Date:</label>
+          <input type="text" id="dateBox" name="dateBox" placeholder="YYYY-MM-DD">
+          <label for="ETABox" style="margin-left:10px">Resulting ETA:</label>
+          <input type="text" id="ETABox" name="ETABox" placeholder="ETA will appear here" readonly>
+        </div>
+      </div>
+      <div class="form-group">
+        <button class="button" id="calculateETAButton">Calculate ETA and Then Press "Play" on the Simulation Below</button>
+      </div>
+      <div class="box" id="cesiumContainer"></div>
+      <div class="form-group" style="margin-top:1%">
+        <div class="section1" style="flex:1"><a href="about.html" style="text-decoration: none" class="links">About This Project</a></div>
+      </div>
+
+    </div>
+      
+    <script>
+
+      //the following is error handling for clicking on the button, like did they put in a good time? good date? and stuff 
+      function handleETA(event) {
+        timeBoxText = document.getElementById("timeBox").value;
+        dateBoxText = document.getElementById("dateBox").value;
+
+
+        if (timeBoxText == "") {
+          document.getElementById("centerTopTextBox").textContent = "Please enter a time.";
+        }
+
+        if (dateBoxText == "") {
+          document.getElementById("centerTopTextBox").textContent = "Please enter a date.";
+        } else {
+          document.getElementById("centerTopTextBox").textContent = "Flight path from Phoenix to Las Vegas.";
+        }
+
+
+      }
+
+      function sendData() {
+            var userInputTime = document.getElementById('timeBox').value;
+            var userInputDate = document.getElementById('dateBox').value;
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('POST', '/submit', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            // this is the response handling function 
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        console.log(xhr.responseText);
+                    } else {
+                        console.error('Error:', xhr.statusText);
+                    }
+                }
+            };
+
+            var data = JSON.stringify({ 
+                userInputTime: userInputTime,
+                userInputDate: userInputDate
+            });
+
+            xhr.send(data);
+        }
+
+      var button = document.getElementById("calculateETAButton");
+
+      function updatePredictedTimeTextbox(predictedTime) {
+          var textbox = document.getElementById("ETABox");
+          textbox.textContent = predictedTime;
+      }
+
+      function allButtonFunctions() {
+        handleETA();
+        sendData().then(function(response) {
+            var predictedTime = response.predicted_arrival_time; 
+            console.log("predicted Time: " + predictedTime);
+            updatePredictedTimeTextbox(predictedTime);
+        }).catch(function(error) {
+            console.error('Error:', error);
+        });
+        
+        
+      }
+
+      button.addEventListener("click", allButtonFunctions);
+
+    // Your access token can be found at: https://ion.cesium.com/tokens.
+    // Replace `your_access_token` with your Cesium ion access token.
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkY2Q3OGJlMS1mMGNiLTQ5ZDAtOGUzMS03YWM4NGI0MzM1OGMiLCJpZCI6MTczMDU2LCJpYXQiOjE2OTc4NTA3MTN9.RTIXrAdEadgrPTs4O5PWk2N15nLq5_ALIIrohygTiwI';
+
+    // STEP 4 CODE (replaces steps 2 and 3)
+    // Keep your `Cesium.Ion.defaultAccessToken = 'your_token_here'` line from before here. 
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      terrain: Cesium.Terrain.fromWorldTerrain(),
+    });
+
+    const flightData = JSON.parse('{{ flight_data | safe }}');
+
+    /* Initialize the viewer clock:
+      Assume the radar samples are 30 seconds apart, and calculate the entire flight duration based on that assumption.
+      Get the start and stop date times of the flight, where the start is the known flight departure time (converted from PST 
+        to UTC) and the stop is the start plus the calculated duration. (Note that Cesium uses Julian dates. See 
+        https://simple.wikipedia.org/wiki/Julian_day.)
+      Initialize the viewer's clock by setting its start and stop to the flight start and stop times we just calculated. 
+      Also, set the viewer's current time to the start time and take the user to that time. 
+    */
+    const timeStepInSeconds = 30;
+    const totalSeconds = timeStepInSeconds * (flightData.length - 1);
+    const start = Cesium.JulianDate.fromIso8601("2020-03-09T23:10:00Z");
+    const stop = Cesium.JulianDate.addSeconds(start, totalSeconds, new Cesium.JulianDate());
+    viewer.clock.startTime = start.clone();
+    viewer.clock.stopTime = stop.clone();
+    viewer.clock.currentTime = start.clone();
+    viewer.timeline.zoomTo(start, stop);
+    viewer.clock.multiplier = 30;
+    viewer.clock.shouldAnimate = false;
+
+    // The SampledPositionedProperty stores the position and timestamp for each sample along the radar sample series.
+    const positionProperty = new Cesium.SampledPositionProperty();
+
+    for (let i = 0; i < flightData.length; i++) {
+      const dataPoint = flightData[i];
+
+      // Declare the time for this individual sample and store it in a new JulianDate instance.
+      const time = Cesium.JulianDate.addSeconds(start, i * timeStepInSeconds, new Cesium.JulianDate());
+      const position = Cesium.Cartesian3.fromDegrees(dataPoint.longitude, dataPoint.latitude, dataPoint.height);
+      // Store the position along with its timestamp.
+      // Here we add the positions all upfront, but these can be added at run-time as samples are received from a server.
+      positionProperty.addSample(time, position);
+
+      viewer.entities.add({
+        description: `Location: (${dataPoint.longitude}, ${dataPoint.latitude}, ${dataPoint.height})`,
+        position: position,
+        point: { pixelSize: 10, color: Cesium.Color.RED }
+      });
+    }
+
+    // STEP 6 CODE (airplane entity)
+    async function loadModel() {
+      // Load the glTF model from Cesium ion.
+      const airplaneUri = await Cesium.IonResource.fromAssetId(2323133);
+      const airplaneEntity = viewer.entities.add({
+        availability: new Cesium.TimeIntervalCollection([ new Cesium.TimeInterval({ start: start, stop: stop }) ]),
+        position: positionProperty,
+        // Attach the 3D model instead of the green point.
+        model: { uri: airplaneUri },
+        // Automatically compute the orientation from the position.
+        orientation: new Cesium.VelocityOrientationProperty(positionProperty),    
+        path: new Cesium.PathGraphics({ width: 3 })
+      });
+      
+      viewer.trackedEntity = airplaneEntity;
+    }
+
+    loadModel();
+
+
+
+      /*
+      // Get your token from https://cesium.com/ion/tokens
+      Cesium.Ion.defaultAccessToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkY2Q3OGJlMS1mMGNiLTQ5ZDAtOGUzMS03YWM4NGI0MzM1OGMiLCJpZCI6MTczMDU2LCJpYXQiOjE2OTc4NTA3MTN9.RTIXrAdEadgrPTs4O5PWk2N15nLq5_ALIIrohygTiwI";
+      // Keep your `Cesium.Ion.defaultAccessToken = 'your_token_here'` line from before here. 
+
+        const viewer = new Cesium.Viewer('cesiumContainer')
+        
+        // STEP 4 CODE (replaces steps 2 and 3)
+        // Keep your `Cesium.Ion.defaultAccessToken = 'your_token_here'` line from before here. 
+
+        //follow this format: 
+        // '[{"longitude":-122.39053,"latitude":37.61779,"height":-27.32},{"longitude":, "latitude":, "height": }]'
+        const flightData = JSON.parse('{{ flight_data | safe }}');
+
+       // const flightData2 = JSON.parse('[{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":,"latitude":,"height":},{"longitude":, "latitude":, "height":}]')
+
+
+        //const flightData2 = JSON.parse(
+          //  '[{"longitude":-0.461941,"latitude":51.4706,"height":83},{"longitude":-122.39053,"latitude":37.61779,"height":-27.32}]'
+        //);
+
+        /* Initialize the viewer clock:
+        Assume the radar samples are 30 seconds apart, and calculate the entire flight duration based on that assumption.
+        Get the start and stop date times of the flight, where the start is the known flight departure time (converted from PST 
+            to UTC) and the stop is the start plus the calculated duration. (Note that Cesium uses Julian dates. See 
+            https://simple.wikipedia.org/wiki/Julian_day.)
+        Initialize the viewer's clock by setting its start and stop to the flight start and stop times we just calculated. 
+        Also, set the viewer's current time to the start time and take the user to that time. 
+        
+
+        
+        const timeStepInSeconds = 30;
+        const totalSeconds = timeStepInSeconds * (flightData.length - 1);
+        const start = Cesium.JulianDate.fromIso8601("2024-02-26T23:28:00Z");
+        const stop = Cesium.JulianDate.addSeconds(start, totalSeconds, new Cesium.JulianDate());
+        viewer.clock.startTime = start.clone();
+        viewer.clock.stopTime = stop.clone();
+        viewer.clock.currentTime = start.clone();
+        viewer.timeline.zoomTo(start, stop);
+        // Speed up the playback speed 50x.
+        viewer.clock.multiplier = 50;
+        // Start playing the scene.
+        viewer.clock.shouldAnimate = true;
+
+        // The SampledPositionedProperty stores the position and timestamp for each sample along the radar sample series.
+        const positionProperty = new Cesium.SampledPositionProperty();
+
+        //red flight data
+        for (let i = 0; i < flightData.length; i++) {
+          const redDataPoint = flightData[i];
+
+          // Declare the time for this individual sample and store it in a new JulianDate instance.
+          const time = Cesium.JulianDate.addSeconds(start, i * timeStepInSeconds, new Cesium.JulianDate());
+          const position = Cesium.Cartesian3.fromDegrees(redDataPoint.longitude, redDataPoint.latitude, redDataPoint.height);
+          // Store the position along with its timestamp.
+          // Here we add the positions all upfront, but these can be added at run-time as samples are received from a server.
+          positionProperty.addSample(time, position);
+
+          viewer.entities.add({
+              description: `Location: (${redDataPoint.longitude}, ${redDataPoint.latitude}, ${redDataPoint.height})`,
+              position: position,
+              point: { pixelSize: 10, color: Cesium.Color.RED }
+          });
+        }
+
+        // STEP 6 CODE (airplane entity)
+        async function loadModel() {
+        // Load the glTF model from Cesium ion.
+        const airplaneUri = await Cesium.IonResource.fromAssetId(2323133);
+        const airplaneEntity = viewer.entities.add({
+            availability: new Cesium.TimeIntervalCollection([ new Cesium.TimeInterval({ start: start, stop: stop }) ]),
+            position: positionProperty,
+            // Attach the 3D model instead of the green point.
+            model: { uri: airplaneUri },
+            // Automatically compute the orientation from the position.
+            orientation: new Cesium.VelocityOrientationProperty(positionProperty),    
+            path: new Cesium.PathGraphics({ width: 3 })
+        });
+        
+        viewer.trackedEntity = airplaneEntity;
+
+        }
+
+        
+
+    loadModel();
+    */
+
+    </script>
+  </body>
+</html>
+
+
+<!--   
+    Notes about flight planning: 
+    T O C : top of climb (the point at which the planned climb to cruise altitude is completed)
+    
+    PACOTS: The Pacific Organized Track System. It's a flexible set of aircraft route tracks that primarily link commercial air transport 
+    (this one is focused on Japan, Southeast Asia, and Hawaii)
+
+    
+
+
+
+
+-->
