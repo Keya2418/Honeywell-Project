@@ -12,8 +12,12 @@ from datetime import time
 app = Flask(__name__, static_url_path='/static')
 
 @app.route('/')
-
 def index():
+    return render_template('index.html')
+
+
+@app.route('/phxlas')
+def phxlas():
     #latLongData = []
     #altitudeData = []
 
@@ -49,7 +53,7 @@ def index():
     except Exception as e:
         print(f"An error has occurred: {e}")
 
-    return render_template('phx-las.html', flight_data=json.dumps(flight_data))
+    return render_template('phxlas.html', flight_data=json.dumps(flight_data))
 
 # I put this outside of the /submit area because I don't want to have to load the model a bajillion times 
 
@@ -94,6 +98,8 @@ loaded_model.load_state_dict(torch.load('model.pth'))
 def submit():
     user_input_time = request.json['userInputTime']
     user_input_date = request.json['userInputDate']
+    if not user_input_time or not user_input_date:
+            raise ValueError("Input fields cannot be empty")
 
     print("userInputTime: ", user_input_time)
     print("userInputDate: ", user_input_date)
@@ -131,7 +137,7 @@ def submit():
 
 
 
-@app.route('/templates/about')
+@app.route('/about')
 def about():
     return render_template('about.html')
 

@@ -66,8 +66,8 @@
 
       #cesiumContainer {
         margin-top:1%;
-        height: 100%;
-        width: 100%;
+        height: 80%;
+        width: 80%;
       }
 
       .button {
@@ -85,18 +85,30 @@
       }
 
       .links {
-        margin: 0 0; 
+        display: inline-block;
+        padding: 10px 20px;
         font-size: 1.5em;
-        color: white;
-        transition: color 0.3s ease;
-        padding: 5px 2px; 
-        display: inline-block; 
+        color: black;
+        text-decoration: none;
+        border: 2px solid black;
+        background-color: white;
+        transition: background-color 0.3s, color 0.3s;
+        border-radius: 5px;
+    }
+
+    .links:hover {
+        background-color: rgb(146, 185, 218);
+        color: black;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+      #cesiumContainer > div.cesium-viewer-timelineContainer {
+          display: none;
       }
 
-      .links:hover {
-        color: #3793f5;
-        background-color: rgba(0, 123, 255, 0.1);
-        text-decoration: underline;
+      #cesiumContainer > div.cesium-viewer-animationContainer {
+          display: none;
       }
       
 
@@ -113,7 +125,7 @@
         </div>
         
         <div class="form-group" style="margin-top:0.5%">
-          <label for="timeBox">Enter a Time in 24-hour format:</label>
+          <label for="timeBox">Enter a Time:</label>
           <input type="text" id="timeBox" name="timeBox" placeholder="00:00">
           <label for="dateBox">Enter a Date:</label>
           <input type="text" id="dateBox" name="dateBox" placeholder="YYYY-MM-DD">
@@ -122,37 +134,59 @@
         </div>
       </div>
       <div class="form-group">
-        <button class="button" id="calculateETAButton">Calculate ETA and Then Press "Play" on the Simulation Below</button>
+        <button class="links" id="calculateETAButton">Calculate ETA</button>
       </div>
       <div class="box" id="cesiumContainer"></div>
       <div class="form-group" style="margin-top:1%">
-        <div class="section1" style="flex:1"><a href="about.html" style="text-decoration: none" class="links">About This Project</a></div>
+        <div class="section1" style="flex:1"><a href="/about" style="text-decoration: none" class="links">About This Project</a></div>
       </div>
 
     </div>
       
     <script>
 
+
       //the following is error handling for clicking on the button, like did they put in a good time? good date? and stuff 
       function handleETA(event) {
         timeBoxText = document.getElementById("timeBox").value;
         dateBoxText = document.getElementById("dateBox").value;
-
+        errorTextBox = document.getElementById("centerTopTextBox");
 
         if (timeBoxText == "") {
-          document.getElementById("centerTopTextBox").textContent = "Please enter a time.";
+          errorTextBox.textContent = "Please enter a time.";
+          return false;
+        } else if (!validateTime(timeBoxText)){
+          errorTextBox.textContent = "Please enter a time in the format HH:MM (24-hour time).";
+          return false;
+        } else {
+          errorTextBox.textContent = "Flight path from Phoenix to Las Vegas.";
         }
 
         if (dateBoxText == "") {
-          document.getElementById("centerTopTextBox").textContent = "Please enter a date.";
+          errorTextBox.textContent = "Please enter a date.";
+          return false;
+        } else if (!validateDate(dateBoxText)) {
+          errorTextBox.textContent = "Please enter a date in the format YYYY-MM-DD.";
+          return false;
         } else {
-          document.getElementById("centerTopTextBox").textContent = "Flight path from Phoenix to Las Vegas.";
+          errorTextBox.textContent = "Flight path from Phoenix to Las Vegas.";
+          return true;
         }
-
-
       }
 
+      function validateTime(time) {
+        // this is the regex for HH:MM
+        var regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        return regex.test(time);
+      }
+
+      function validateDate(date) {
+        // and this is the regex for the format YYYY-MM-DD
+        var regex = /^\d{4}-((0\d)|(1[0-2]))-(([0-2]\d)|3[01])$/;
+        return regex.test(date);
+      }
       function sendData() {
+        return new Promise(function(resolve, reject) {
             var userInputTime = document.getElementById('timeBox').value;
             var userInputDate = document.getElementById('dateBox').value;
 
@@ -161,13 +195,13 @@
             xhr.open('POST', '/submit', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
 
-            // this is the response handling function 
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        console.log(xhr.responseText);
+                        var response = JSON.parse(xhr.responseText);
+                        resolve(response);
                     } else {
-                        console.error('Error:', xhr.statusText);
+                        reject(xhr.statusText);
                     }
                 }
             };
@@ -178,26 +212,17 @@
             });
 
             xhr.send(data);
-        }
+        });
+      }
+
 
       var button = document.getElementById("calculateETAButton");
 
       function updatePredictedTimeTextbox(predictedTime) {
+          console.log("ummm hello???");
           var textbox = document.getElementById("ETABox");
-          textbox.textContent = predictedTime;
-      }
-
-      function allButtonFunctions() {
-        handleETA();
-        sendData().then(function(response) {
-            var predictedTime = response.predicted_arrival_time; 
-            console.log("predicted Time: " + predictedTime);
-            updatePredictedTimeTextbox(predictedTime);
-        }).catch(function(error) {
-            console.error('Error:', error);
-        });
-        
-        
+          textbox.value = predictedTime;
+          console.log("after the little updated thing");
       }
 
       button.addEventListener("click", allButtonFunctions);
@@ -210,18 +235,11 @@
     // Keep your `Cesium.Ion.defaultAccessToken = 'your_token_here'` line from before here. 
     const viewer = new Cesium.Viewer('cesiumContainer', {
       terrain: Cesium.Terrain.fromWorldTerrain(),
+      timeZone: 'PST'
     });
 
     const flightData = JSON.parse('{{ flight_data | safe }}');
 
-    /* Initialize the viewer clock:
-      Assume the radar samples are 30 seconds apart, and calculate the entire flight duration based on that assumption.
-      Get the start and stop date times of the flight, where the start is the known flight departure time (converted from PST 
-        to UTC) and the stop is the start plus the calculated duration. (Note that Cesium uses Julian dates. See 
-        https://simple.wikipedia.org/wiki/Julian_day.)
-      Initialize the viewer's clock by setting its start and stop to the flight start and stop times we just calculated. 
-      Also, set the viewer's current time to the start time and take the user to that time. 
-    */
     const timeStepInSeconds = 30;
     const totalSeconds = timeStepInSeconds * (flightData.length - 1);
     const start = Cesium.JulianDate.fromIso8601("2020-03-09T23:10:00Z");
@@ -231,7 +249,18 @@
     viewer.clock.currentTime = start.clone();
     viewer.timeline.zoomTo(start, stop);
     viewer.clock.multiplier = 30;
+    viewer.timeline.shouldShow = false;
     viewer.clock.shouldAnimate = false;
+
+    /* Initialize the viewer clock:
+      Assume the radar samples are 30 seconds apart, and calculate the entire flight duration based on that assumption.
+      Get the start and stop date times of the flight, where the start is the known flight departure time (converted from PST 
+        to UTC) and the stop is the start plus the calculated duration. (Note that Cesium uses Julian dates. See 
+        https://simple.wikipedia.org/wiki/Julian_day.)
+      Initialize the viewer's clock by setting its start and stop to the flight start and stop times we just calculated. 
+      Also, set the viewer's current time to the start time and take the user to that time. 
+    */
+    
 
     // The SampledPositionedProperty stores the position and timestamp for each sample along the radar sample series.
     const positionProperty = new Cesium.SampledPositionProperty();
@@ -271,6 +300,48 @@
     }
 
     loadModel();
+
+    var animation = document.getElementsByClassName("cesium-viewer-animationContainer")[0];
+
+    animation.style.display = 'none';
+
+    var cesium_timeline = document.getElementsByClassName("cesium-viewer-timelineContainer")[0];
+
+    cesium_timeline.style.display = 'none';
+    
+    function convertToZuluTime(predictedTime) {
+      const [hoursStr, minutesStr] = predictedTime.split(':');
+      const hours = parseInt(hoursStr, 10);
+      const minutes = parseInt(minutesStr, 10);
+
+      let timeInMs = (hours * 60 + minutes) * 60 * 1000;
+
+      const mstOffsetMs = 7 * 60 * 60 * 1000;
+      timeInMs += mstOffsetMs;
+
+      const newHours = Math.floor(timeInMs / (60 * 60 * 1000));
+      const newMinutes = Math.floor((timeInMs % (60 * 60 * 1000)) / (60 * 1000));
+
+      const newTimeStr = `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`;
+      
+      return newTimeStr;
+  }
+
+    function allButtonFunctions() {
+        if (handleETA() == true) {
+            sendData().then(function(response) {
+              var predictedTime = response.predicted_arrival_time; 
+              console.log("predicted Time: " + predictedTime);
+              updatePredictedTimeTextbox(predictedTime);
+              dateBoxText = document.getElementById("dateBox").value;
+              timeBoxText = document.getElementById("timeBox").value;
+              newZuluTime = convertToZuluTime(timeBoxText);
+              viewer.clock.shouldAnimate = true;
+          }).catch(function(error) {
+              console.error('Error:', error);
+          });
+        }
+      }
 
 
 

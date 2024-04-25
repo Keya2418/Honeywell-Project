@@ -21,13 +21,34 @@
   
   
   <style>
+
     .links {
-        margin: 0 0; /* Adjusted the left margin to 0 */
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 1.5em;
+        color: black;
+        text-decoration: none;
+        border: 2px solid black;
+        background-color: white;
+        transition: background-color 0.3s, color 0.3s;
+        border-radius: 5px;
+    }
+
+    .links:hover {
+        background-color: black;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    /*
+    .links {
+        margin: 0 0;
         font-size: 1.5em;
         color: white;
         transition: color 0.3s ease;
-        padding: 10px 2px; /* Padding around the text inside the button */
-        display: inline-block; /* Display as inline block to respect padding and border */
+        padding: 10px 2px; 
+        display: inline-block; 
     }
 
     .links:hover {
@@ -35,6 +56,7 @@
         background-color: rgba(0, 123, 255, 0.1);
         text-decoration: underline;
     }
+    */
 
     .result-image {
     max-width: 100%; /* Adjust as needed */
@@ -47,10 +69,8 @@
 </head>
 <body>
   
-  <section data-bs-version="5.1" class="header18 cid-u9SqVpG8xS mbr-fullscreen" data-bg-video="https://youtu.be/qHfzCl9rJA8?feature=shared" id="hero-16-u9SqVpG8xS">
-  
 
-  <div class="mbr-overlay" style="opacity: 0.4; background-color: rgb(68, 67, 67);"></div>
+  <div style="background: linear-gradient(to bottom, #1E0342 45%, #0E46A3 95%, #FFFFFF 100%)">
   <div class="container-fluid">
     <div class="row">
       <div class="content-wrap col-12 col-md-12">
@@ -61,7 +81,8 @@
       </div>
     </div>
   </div>
-</section>
+</div>
+
 
 <section data-bs-version="5.1" class="article12 cid-u9SqVpIkIZ" id="about-me-12-u9SqVpIkIZ">    
     
@@ -136,10 +157,10 @@
                             <li>Ridge regression model achieves MSE: Train - 9.26, Test - 8.26, providing an alternative prediction approach.</li>
                         </ul>
 
-                        <img src="assets/static/result2.jpeg" alt="Graph 1" class="result-image">
-                        <img src="assets/static/result3.jpeg" alt="Graph 2" class="result-image">
-                        <img src="assets/static/result4.jpeg" alt="Graph 3" class="result-image">
-                        <img src="assets/static/result5.jpeg" alt="Graph 4" class="result-image">
+                        <img src="{{ url_for('static', filename='result2.jpeg') }}" alt="Graph 1" class="result-image">
+                        <img src="{{ url_for('static', filename='result3.jpeg') }}" alt="Graph 2" class="result-image">
+                        <img src="{{ url_for('static', filename='result4.jpeg') }}" alt="Graph 3" class="result-image">
+                        <img src="{{ url_for('static', filename='result5.jpeg') }}" alt="Graph 4" class="result-image">
                     </div>
                 </div>
                 
@@ -229,11 +250,11 @@
         <div class="row justify-content-center"> <!-- Added justify-content-center class -->
             <div class="content-wrap col-12 col-md-6 text-center"> <!-- Added text-center class -->
                 <h1 class="mbr-section-title mbr-fonts-style mbr-white mb-4 display-2">
-                    <strong>Thank you for flying With us!</strong>
+                    <strong>Thank you for flying with us!</strong>
                 </h1>
                 <!-- Adding the demo link -->
                 <p class="mbr-fonts-style mbr-white mb-4 display-7">
-                    <a href="phx-las.html" class="links">Demo</a>
+                    <a href="/phxlas" class="links">Demo</a>
                 </p>
             </div>
         </div>

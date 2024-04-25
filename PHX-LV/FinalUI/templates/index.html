@@ -63,18 +63,23 @@
             margin-top: 20px;
         }
 
-        .links a {
-            margin: 0 20px;
+        .links {
+            display: inline-block;
+            padding: 10px 20px;
             font-size: 1.5em;
-            color: white;
-            transition: color 0.3s ease;
-            padding: 10px 20px; /* Padding around the text inside the button */
-            display: inline-block; /* Display as inline block to respect padding and border */
+            color: black;
+            text-decoration: none;
+            border: 2px solid black;
+            background-color: white;
+            transition: background-color 0.3s, color 0.3s;
+            border-radius: 5px;
         }
 
-        .links a:hover {
-            color: #3793f5;
-            background-color: rgba(0, 123, 255, 0.1);
+        .links:hover {
+            background-color: black;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
         }
 
         /* Logo styling */
@@ -118,18 +123,18 @@
 <body>
 
     <!-- Logo -->
-    <img src="assets/static/iraAFulton.png" alt="Logo" class="logo">
+    <img src="{{ url_for('static', filename='iraAFulton.png') }}" alt="Logo" class="logo">
     <!-- Second Logo -->
-    <img src="assets/static/honeywell.png" alt="Second Logo" class="logo-left">
+    <img src="{{ url_for('static', filename='honeywell.png') }}" alt="Second Logo" class="logo-left">
 
     <div class="container">
 
         <h1>Honeywell Aerospace: Improving Flight Plan Routes Based on Big Data and AL/ML</h1>
         <h2>Shardul Dhaul, Yonatan Rosenbloom, John Baker, Ashley Nichols, Keya Gholap</h2>
 
-        <div class="links">
-            <a href="about.html">About</a>
-            <a href="phx-las.html">Demo</a>
+        <div>
+            <a class="links" href="/about">About</a>
+            <a class="links" href="/phxlas">Demo</a>
         </div>
 
     </div>
