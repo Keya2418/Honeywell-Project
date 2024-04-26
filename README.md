@@ -1,3 +1,13 @@
+# How to Run This App
+
+## PHX-LV > FinalUI Folder
+
+After navigating to the PHX-LV folder, go into the FinalUI folder and then type the command "python app.py", and this will run the website. 
+
+To run the machine learning model, go to the Machine_Learning folder within PHX-LV and run nn.py or alternatively open the nn.ipynb file in Jupyter notebook. 
+
+To run the webscrapers, go to the Machine_Learning folder within PHX-LV and run webscraper_eta.py (ETA data) or webscraper.py (latitude, longitude, and altitude coordinates data). 
+
 # Honeywell-Project Description
 Avionics applications provide proposed flight plan routes and modifications of those routes to optimize time and fuel usage.  This project will involve consuming existing data sources and data mining it to extract application specific content.
 This project will discover the data available via System Wide Information Management (SWIM) and data mine it to determine popular flight plan routes and evaluate then for time / fuel usage.  The evaluation will also include a study of weather patterns to determine whether routes are modified due to seasonal weather or are routes planned using daily weather forecasts. 
