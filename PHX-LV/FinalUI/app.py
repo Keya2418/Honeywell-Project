@@ -87,6 +87,8 @@ class NeuralNetwork(nn.Module):
         
         predicted_arrival_time = predicted_arrival_time_tensor.item()
 
+        print("predicted_arrival_time: ", predicted_arrival_time)
+
         return predicted_arrival_time
 
 # Load the model
@@ -120,9 +122,12 @@ def submit():
             'Day Numeric': day_of_week
         }
         predicted_arrival_time = loaded_model.predict_actual_time_of_arrival(sample_input_data)
-        intermediary_minutes = takeoff_actual + predicted_arrival_time
+        intermediary_minutes = predicted_arrival_time
         hours = int(intermediary_minutes // 60)
         minutes = int(intermediary_minutes % 60)
+        if (hours == 24 or hours == 25):
+            hours = 00
+
         predicted_arrival_time = '{:02d}:{:02d}'.format(hours, minutes)
         
         print(f"Predicted Actual Time of Arrival: {predicted_arrival_time}")
